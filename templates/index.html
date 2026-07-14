@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoAI &mdash; God Mode Console</title>
+<title>Datamind &mdash; God Mode Console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -286,7 +286,7 @@
     <div class="brand">
       <span class="brand-mark">AI</span>
       <div class="brand-text">
-        <div class="brand-title">AutoAI</div>
+        <div class="brand-title">Datamind</div>
         <div class="brand-sub" id="consoleSubtitle">tabular ml console</div>
       </div>
     </div>
@@ -522,11 +522,11 @@ function escapeHtml(s){
     consoleBody.innerHTML=""; $("#toPredictBtn").hidden=true;
     $("#finalTrainLoss").textContent="\u2014"; $("#finalTestLoss").textContent="\u2014"; $("#finalMetric").textContent="\u2014";
     if(state.taskType==="image_classification"){
-      consoleLine(`<span class="console-line-meta">$</span> autoai cnn-train --session ${state.sessionId}`);
+      consoleLine(`<span class="console-line-meta">$</span> Datamind cnn-train --session ${state.sessionId}`);
       consoleLine(`<span class="k">model</span> <span class="v">SimpleCNN</span> <span class="k">epochs</span> <span class="v">${epochsRange.value}</span> <span class="k">lr</span> <span class="v">${(lrRange.value/10000).toFixed(4)}</span>`);
       consoleLine(`<span class="console-line-meta">loading images from folders into tensors...</span>`);
     } else {
-      consoleLine(`<span class="console-line-meta">$</span> autoai train --target ${escapeHtml(state.targetColumn)} --features ${state.featureColumns.length}`);
+      consoleLine(`<span class="console-line-meta">$</span> Datamind train --target ${escapeHtml(state.targetColumn)} --features ${state.featureColumns.length}`);
       consoleLine(`<span class="k">task_type</span> <span class="v">${escapeHtml(state.taskType)}</span> <span class="k">epochs</span> <span class="v">${epochsRange.value}</span> <span class="k">lr</span> <span class="v">${(lrRange.value/10000).toFixed(4)}</span>`);
       consoleLine(`<span class="console-line-meta">building feature matrix, fitting scaler...</span>`);
     }
