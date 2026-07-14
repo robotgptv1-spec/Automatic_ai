@@ -3,306 +3,285 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoAI &mdash; Unified ML & CNN Console</title>
+<title>AutoAI &mdash; God Mode Console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
   :root{
-  --bg: #0A0E14;
-  --panel: #121821;
-  --panel-raised: #171F2B;
-  --border: #212B38;
-  --border-soft: #1A222D;
-  --text: #E7EAEE;
-  --muted: #7C8798;
-  --muted-dim: #4E5866;
-  --accent: #FF6B35;
-  --accent-dim: #C9531F;
-  --cyan: #22D3EE;
-  --green: #4ADE80;
-  --red: #F87171;
+    --bg:#05060B; --bg-2:#090B14;
+    --panel:rgba(18,22,34,0.55);
+    --panel-solid:#0F1320;
+    --panel-raised:rgba(28,33,50,0.75);
+    --border:rgba(120,140,200,0.14);
+    --border-strong:rgba(120,140,200,0.28);
+    --border-soft:rgba(120,140,200,0.08);
+    --text:#ECEFF7; --muted:#8892AB; --muted-dim:#4A5169;
+    --accent:#FF6B35; --accent-glow:#FF9166;
+    --cyan:#22D3EE; --cyan-glow:#67E8F9;
+    --magenta:#C084FC; --green:#4ADE80; --red:#F87171;
+    --grad-primary:linear-gradient(135deg,#FF6B35 0%,#FF3F81 50%,#C084FC 100%);
+    --grad-cyan:linear-gradient(135deg,#22D3EE,#7C3AED);
+    --grad-holo:linear-gradient(120deg,#FF6B35,#22D3EE 50%,#C084FC);
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;} html,body{height:100%;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  body::before{content:"";position:fixed;inset:-20%;
+    background-image:
+      radial-gradient(circle at 15% 15%,rgba(255,107,53,0.22),transparent 45%),
+      radial-gradient(circle at 85% 20%,rgba(34,211,238,0.18),transparent 45%),
+      radial-gradient(circle at 50% 90%,rgba(192,132,252,0.20),transparent 50%);
+    filter:blur(40px);animation:aurora 22s ease-in-out infinite alternate;
+    pointer-events:none;z-index:0;}
+  body::after{content:"";position:fixed;inset:0;
+    background-image:
+      linear-gradient(rgba(120,140,200,0.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(120,140,200,0.05) 1px,transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%);
+    pointer-events:none;z-index:0;}
+  @keyframes aurora{0%{transform:translate(0,0) scale(1);}50%{transform:translate(3%,-2%) scale(1.05);}100%{transform:translate(-3%,2%) scale(1.02);}}
 
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-}
+  button,input,select{font-family:inherit;}
+  .app{position:relative;z-index:1;display:grid;grid-template-columns:280px 1fr;min-height:100vh;}
 
-*{ box-sizing: border-box; }
-html,body{ height:100%; }
-body{
-  margin:0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  -webkit-font-smoothing: antialiased;
-}
-body::before{
-  content:"";
-  position: fixed; inset:0;
-  background-image:
-    radial-gradient(circle at 15% 8%, rgba(255,107,53,0.06), transparent 40%),
-    radial-gradient(circle at 85% 90%, rgba(34,211,238,0.06), transparent 40%);
-  pointer-events:none;
-  z-index:0;
-}
+  /* RAIL */
+  .rail{border-right:1px solid var(--border);
+    background:linear-gradient(180deg,rgba(9,11,20,0.9),rgba(5,6,11,0.7));
+    backdrop-filter:blur(24px);
+    display:flex;flex-direction:column;padding:30px 22px;position:sticky;top:0;height:100vh;}
+  .brand{display:flex;align-items:center;gap:14px;margin-bottom:48px;}
+  .brand-mark{width:42px;height:42px;border-radius:12px;background:var(--grad-primary);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-weight:700;font-size:13px;color:#0A0410;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 10px 32px -8px rgba(255,107,53,0.55);position:relative;}
+  .brand-mark::after{content:"";position:absolute;inset:-2px;border-radius:14px;
+    background:var(--grad-primary);filter:blur(14px);opacity:.4;z-index:-1;}
+  .brand-title{font-family:var(--font-display);font-weight:700;font-size:18px;letter-spacing:0.3px;
+    background:var(--grad-holo);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .brand-sub{font-family:var(--font-mono);font-size:10.5px;color:var(--muted-dim);text-transform:lowercase;letter-spacing:0.6px;margin-top:2px;}
 
-button, input, select{ font-family: inherit; }
+  .steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;flex:1;}
+  .step{position:relative;display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:10px;
+    color:var(--muted-dim);border:1px solid transparent;transition:all .25s ease;}
+  .step-index{font-family:var(--font-mono);font-size:11px;width:22px;height:22px;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;border:1px solid var(--border);background:rgba(255,255,255,0.02);}
+  .step-label{font-size:13.5px;font-weight:500;}
+  .step.is-active{color:var(--text);
+    background:linear-gradient(90deg,rgba(255,107,53,0.14),rgba(34,211,238,0.06) 60%,transparent);
+    border-color:rgba(255,107,53,0.35);
+    box-shadow:inset 0 0 0 1px rgba(255,107,53,0.15),0 10px 30px -18px rgba(255,107,53,0.7);}
+  .step.is-active .step-index{background:var(--grad-primary);color:#0A0410;border-color:transparent;
+    box-shadow:0 0 18px -2px rgba(255,107,53,0.7);}
+  .step.is-active::before{content:"";position:absolute;left:-1px;top:20%;bottom:20%;width:2px;
+    background:var(--grad-primary);border-radius:2px;box-shadow:0 0 12px var(--accent);}
+  .step.is-done{color:var(--muted);}
+  .step.is-done .step-index{color:var(--green);border-color:rgba(74,222,128,0.35);background:rgba(74,222,128,0.08);}
 
-.app{
-  position: relative;
-  z-index:1;
-  display:grid;
-  grid-template-columns: 260px 1fr;
-  min-height:100vh;
-}
+  .rail-footer{margin-top:24px;display:flex;flex-direction:column;gap:14px;padding-top:20px;border-top:1px solid var(--border-soft);}
+  .rail-hint{font-family:var(--font-mono);font-size:10.5px;color:var(--muted-dim);line-height:1.6;}
+  .rail-hint::before{content:"● ";color:var(--green);animation:pulse 1.6s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
 
-/* ============ RAIL ============ */
-.rail{
-  border-right:1px solid var(--border-soft);
-  background: linear-gradient(180deg, #0D121B, #0A0E14);
-  display:flex;
-  flex-direction:column;
-  padding:28px 22px;
-}
-.brand{ display:flex; align-items:center; gap:12px; margin-bottom:44px; }
-.brand-mark{
-  width:36px; height:36px;
-  border-radius:9px;
-  background: linear-gradient(135deg, var(--accent), #FF9166);
-  display:flex; align-items:center; justify-content:center;
-  font-family: var(--font-mono); font-weight:600; font-size:13px;
-  color:#180A03;
-}
-.brand-title{ font-family: var(--font-display); font-weight:700; font-size:17px; letter-spacing:0.2px; }
-.brand-sub{ font-family: var(--font-mono); font-size:10.5px; color: var(--muted-dim); text-transform:lowercase; letter-spacing:0.5px; }
+  /* MAIN */
+  .main{padding:52px 60px;max-width:1120px;}
+  .panel-head{margin-bottom:34px;}
+  .panel-head h1{font-family:var(--font-display);font-size:34px;font-weight:700;margin:0 0 10px;letter-spacing:-0.5px;
+    background:var(--grad-holo);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .panel-head p{margin:0;color:var(--muted);font-size:14.5px;max-width:620px;line-height:1.6;}
 
-.steps{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; flex:1; }
-.step{
-  display:flex; align-items:center; gap:12px;
-  padding:11px 12px; border-radius:8px;
-  color: var(--muted-dim);
-  border-left:2px solid transparent;
-  transition: color .15s ease, background .15s ease;
-}
-.step-index{ font-family: var(--font-mono); font-size:11px; }
-.step-label{ font-size:13.5px; font-weight:500; }
-.step.is-active{ color: var(--text); background: var(--panel); border-left-color: var(--accent); }
-.step.is-active .step-index{ color: var(--accent); }
-.step.is-done{ color: var(--muted); }
-.step.is-done .step-index{ color: var(--green); }
+  .primary-btn{position:relative;background:var(--grad-primary);color:#0A0410;border:none;
+    font-family:var(--font-display);font-weight:700;font-size:14px;padding:14px 26px;border-radius:10px;
+    cursor:pointer;margin-top:30px;letter-spacing:0.3px;
+    box-shadow:0 10px 30px -10px rgba(255,107,53,0.6),inset 0 1px 0 rgba(255,255,255,0.25);
+    transition:transform .15s ease,box-shadow .2s ease,filter .2s ease;}
+  .primary-btn:hover{transform:translateY(-2px);filter:brightness(1.08);
+    box-shadow:0 18px 40px -10px rgba(255,107,53,0.75),0 0 0 1px rgba(255,255,255,0.12) inset;}
+  .primary-btn:active{transform:translateY(0);}
+  .primary-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
 
-.rail-footer{ margin-top:24px; display:flex; flex-direction:column; gap:14px; }
-.rail-hint{ font-family: var(--font-mono); font-size:10.5px; color: var(--muted-dim); line-height:1.5; }
+  .ghost-btn{background:rgba(255,255,255,0.02);color:var(--muted);border:1px solid var(--border-strong);
+    font-size:12.5px;font-family:var(--font-mono);padding:10px 16px;border-radius:8px;cursor:pointer;
+    text-decoration:none;display:inline-block;text-align:center;transition:all .2s ease;}
+  .ghost-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(34,211,238,0.06);
+    box-shadow:0 0 20px -6px rgba(34,211,238,0.4);}
 
-/* ============ MAIN ============ */
-.main{ padding:44px 56px; max-width:1040px; }
-.panel-head{ margin-bottom:30px; }
-.panel-head h1{ font-family: var(--font-display); font-size:28px; font-weight:600; margin:0 0 8px; }
-.panel-head p{ margin:0; color: var(--muted); font-size:14.5px; max-width:560px; line-height:1.5; }
+  .error-box{margin-top:16px;padding:12px 15px;border:1px solid rgba(248,113,113,0.4);
+    background:linear-gradient(90deg,rgba(248,113,113,0.10),rgba(248,113,113,0.03));
+    color:#FCA5A5;font-size:13px;border-radius:8px;box-shadow:0 0 24px -8px rgba(248,113,113,0.4);}
 
-.primary-btn{
-  background: var(--accent);
-  color:#180A03;
-  border:none;
-  font-family: var(--font-display);
-  font-weight:600;
-  font-size:14px;
-  padding:12px 22px;
-  border-radius:8px;
-  cursor:pointer;
-  margin-top:26px;
-  transition: transform .1s ease, background .15s ease;
-}
-.primary-btn:hover{ background:#FF7D4E; transform: translateY(-1px); }
-.primary-btn:active{ transform: translateY(0); }
-.primary-btn:disabled{ opacity:.4; cursor:not-allowed; transform:none; }
+  /* DROPZONE */
+  .dropzone{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;border:1.5px dashed var(--border-strong);border-radius:18px;padding:64px 24px;cursor:pointer;
+    transition:all .25s ease;background:var(--panel);backdrop-filter:blur(20px);overflow:hidden;}
+  .dropzone::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 50% 50%,rgba(255,107,53,0.10),transparent 60%);opacity:0;transition:opacity .3s ease;}
+  .dropzone:hover,.dropzone.is-dragover{border-color:var(--accent);
+    box-shadow:0 0 0 1px rgba(255,107,53,0.3),0 30px 80px -30px rgba(255,107,53,0.5);}
+  .dropzone:hover::before,.dropzone.is-dragover::before{opacity:1;}
+  .dropzone-icon{position:relative;z-index:1;width:52px;height:52px;border-radius:50%;
+    border:1px solid rgba(255,107,53,0.4);
+    background:radial-gradient(circle,rgba(255,107,53,0.18),transparent 70%);
+    display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:20px;margin-bottom:8px;
+    box-shadow:0 0 30px -6px rgba(255,107,53,0.5);animation:floaty 3s ease-in-out infinite;}
+  @keyframes floaty{50%{transform:translateY(-4px);}}
+  .dropzone-title{position:relative;z-index:1;font-family:var(--font-display);font-weight:600;font-size:16px;}
+  .dropzone-sub{position:relative;z-index:1;font-family:var(--font-mono);font-size:11.5px;color:var(--muted-dim);}
 
-.ghost-btn{
-  background: transparent;
-  color: var(--muted);
-  border:1px solid var(--border);
-  font-size:12.5px;
-  font-family: var(--font-mono);
-  padding:9px 14px;
-  border-radius:7px;
-  cursor:pointer;
-  text-decoration:none;
-  display:inline-block;
-  text-align:center;
-  transition: border-color .15s ease, color .15s ease;
-}
-.ghost-btn:hover{ border-color: var(--muted); color: var(--text); }
+  /* SUMMARY */
+  .dataset-summary{margin-top:30px;}
+  .summary-row{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .summary-chip{background:var(--panel);backdrop-filter:blur(16px);border:1px solid var(--border);
+    border-radius:12px;padding:14px 20px;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+  .summary-chip::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.6;}
+  .summary-chip span{font-family:var(--font-mono);font-size:22px;font-weight:700;
+    background:var(--grad-cyan);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .summary-chip label{font-size:10.5px;color:var(--muted-dim);text-transform:uppercase;letter-spacing:0.8px;margin-top:4px;}
 
-.error-box{
-  margin-top:16px;
-  padding:11px 14px;
-  border:1px solid rgba(248,113,113,0.35);
-  background: rgba(248,113,113,0.08);
-  color: var(--red);
-  font-size:13px;
-  border-radius:7px;
-}
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;
+    background:var(--panel);backdrop-filter:blur(16px);}
+  table{border-collapse:collapse;width:100%;font-size:12.5px;}
+  table th{text-align:left;padding:11px 14px;background:rgba(28,33,50,0.55);
+    color:var(--cyan);font-family:var(--font-mono);font-weight:600;font-size:10.5px;
+    text-transform:uppercase;letter-spacing:0.6px;white-space:nowrap;border-bottom:1px solid var(--border);}
+  table td{padding:9px 14px;border-bottom:1px solid var(--border-soft);color:var(--text);
+    white-space:nowrap;font-family:var(--font-mono);font-size:12px;}
+  table tr:last-child td{border-bottom:none;}
+  table tbody tr{transition:background .15s ease;}
+  table tbody tr:hover{background:rgba(34,211,238,0.04);}
 
-/* ============ DROPZONE ============ */
-.dropzone{
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:6px;
-  border:1.5px dashed var(--border);
-  border-radius:14px;
-  padding:56px 24px;
-  cursor:pointer;
-  transition: border-color .15s ease, background .15s ease;
-  background: var(--panel);
-}
-.dropzone:hover, .dropzone.is-dragover{ border-color: var(--accent); background: rgba(255,107,53,0.05); }
-.dropzone-icon{
-  width:40px; height:40px; border-radius:50%;
-  border:1px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  color: var(--accent); font-size:16px; margin-bottom:6px;
-}
-.dropzone-title{ font-family: var(--font-display); font-weight:600; font-size:15px; }
-.dropzone-sub{ font-family: var(--font-mono); font-size:11.5px; color: var(--muted-dim); }
+  /* CONFIGURE */
+  .config-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  .field-wide{grid-column:1/-1;}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:10px;}
+  .field-hint{font-weight:400;color:var(--muted-dim);font-size:11.5px;margin-left:6px;font-family:var(--font-mono);}
 
-/* ============ DATASET SUMMARY ============ */
-.dataset-summary{ margin-top:26px; }
-.summary-row{ display:flex; gap:12px; margin-bottom:18px; }
-.summary-chip{
-  background: var(--panel); border:1px solid var(--border-soft);
-  border-radius:9px; padding:10px 16px; display:flex; flex-direction:column;
-}
-.summary-chip span{ font-family: var(--font-mono); font-size:18px; color: var(--cyan); font-weight:600; }
-.summary-chip label{ font-size:10.5px; color: var(--muted-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+  select{width:100%;padding:12px 14px;background:var(--panel-solid);border:1px solid var(--border-strong);
+    color:var(--text);border-radius:9px;font-size:13.5px;transition:all .2s ease;appearance:none;
+    background-image:linear-gradient(45deg,transparent 50%,var(--cyan) 50%),linear-gradient(135deg,var(--cyan) 50%,transparent 50%);
+    background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:36px;}
+  select:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,0.15);}
 
-.table-wrap{ overflow-x:auto; border:1px solid var(--border-soft); border-radius:10px; }
-table{ border-collapse:collapse; width:100%; font-size:12.5px; }
-table th{
-  text-align:left; padding:9px 12px; background: var(--panel-raised);
-  color: var(--muted); font-family: var(--font-mono); font-weight:500; font-size:11px;
-  text-transform:uppercase; letter-spacing:0.4px; white-space:nowrap;
-  border-bottom:1px solid var(--border-soft);
-}
-table td{
-  padding:8px 12px; border-bottom:1px solid var(--border-soft);
-  color: var(--text); white-space:nowrap; font-family: var(--font-mono); font-size:12px;
-}
-table tr:last-child td{ border-bottom:none; }
+  .segmented{display:flex;border:1px solid var(--border-strong);border-radius:10px;overflow:hidden;
+    width:fit-content;background:var(--panel-solid);}
+  .seg-btn{background:transparent;color:var(--muted);border:none;padding:10px 18px;
+    font-size:12.5px;font-family:var(--font-mono);cursor:pointer;border-right:1px solid var(--border);transition:all .2s ease;}
+  .seg-btn:last-child{border-right:none;}
+  .seg-btn:hover{color:var(--text);}
+  .seg-btn.is-active{background:var(--grad-primary);color:#0A0410;font-weight:700;box-shadow:inset 0 0 20px rgba(255,255,255,0.15);}
 
-/* ============ CONFIGURE ============ */
-.config-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:24px; }
-.field-wide{ grid-column: 1 / -1; }
-.field label{ display:block; font-size:13px; font-weight:600; margin-bottom:8px; }
-.field-hint{ font-weight:400; color: var(--muted-dim); font-size:11.5px; margin-left:6px; }
+  .chip-grid{display:flex;flex-wrap:wrap;gap:8px;}
+  .feature-chip{border:1px solid var(--border-strong);background:rgba(255,255,255,0.02);color:var(--muted);
+    padding:9px 15px;border-radius:22px;font-size:12.5px;cursor:pointer;font-family:var(--font-mono);transition:all .18s ease;}
+  .feature-chip:hover{color:var(--text);border-color:var(--muted);}
+  .feature-chip.is-selected{border-color:var(--cyan);color:var(--cyan);background:rgba(34,211,238,0.10);
+    box-shadow:0 0 16px -4px rgba(34,211,238,0.5),inset 0 0 12px rgba(34,211,238,0.08);}
+  .feature-chip.is-disabled{opacity:.3;cursor:not-allowed;}
 
-select{
-  width:100%; padding:11px 12px; background: var(--panel);
-  border:1px solid var(--border); color: var(--text); border-radius:8px; font-size:13.5px;
-}
+  .hyperparams{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:36px;
+    padding:22px;border:1px solid var(--border);border-radius:14px;background:var(--panel);backdrop-filter:blur(16px);}
+  .hp-field label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:12px;
+    font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.6px;}
+  .hp-field label span{color:var(--cyan);font-size:13px;text-shadow:0 0 12px rgba(34,211,238,0.5);}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;
+    background:var(--border-strong);border-radius:2px;outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;
+    border-radius:50%;background:var(--grad-primary);
+    box-shadow:0 0 12px rgba(255,107,53,0.7),0 0 0 3px rgba(255,107,53,0.15);cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;border:none;
+    background:var(--accent);box-shadow:0 0 12px rgba(255,107,53,0.7);cursor:pointer;}
 
-.segmented{ display:flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; width:fit-content; }
-.seg-btn{
-  background: var(--panel); color: var(--muted); border:none; padding:9px 16px;
-  font-size:12.5px; font-family: var(--font-mono); cursor:pointer; border-right:1px solid var(--border);
-}
-.seg-btn:last-child{ border-right:none; }
-.seg-btn.is-active{ background: var(--accent); color:#180A03; font-weight:600; }
+  /* TRAIN */
+  .train-layout{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;align-items:start;}
+  .console{border:1px solid var(--border-strong);border-radius:14px;overflow:hidden;
+    background:linear-gradient(180deg,#05070E,#030509);
+    box-shadow:0 30px 80px -30px rgba(0,0,0,0.8),inset 0 0 0 1px rgba(74,222,128,0.05);position:relative;}
+  .console::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,var(--green),transparent);opacity:.5;}
+  .console-topbar{display:flex;align-items:center;gap:7px;padding:11px 14px;
+    background:rgba(28,33,50,0.5);border-bottom:1px solid var(--border-soft);}
+  .dot{width:10px;height:10px;border-radius:50%;box-shadow:0 0 8px currentColor;}
+  .dot-r{background:#F87171;color:#F87171;} .dot-y{background:#FBBF24;color:#FBBF24;} .dot-g{background:#4ADE80;color:#4ADE80;}
+  .console-title{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-left:10px;}
+  .console-body{height:360px;overflow-y:auto;padding:16px 18px;font-family:var(--font-mono);font-size:12px;
+    line-height:1.85;color:var(--green);background:radial-gradient(ellipse at top,rgba(74,222,128,0.03),transparent 60%);}
+  .console-body::-webkit-scrollbar{width:8px;}
+  .console-body::-webkit-scrollbar-thumb{background:rgba(74,222,128,0.15);border-radius:4px;}
+  .console-line-meta{color:var(--muted-dim);}
+  .console-line .k{color:var(--muted);}
+  .console-line .v{color:var(--cyan);text-shadow:0 0 8px rgba(34,211,238,0.35);}
+  .console-cursor{display:inline-block;width:8px;height:14px;background:var(--green);margin-left:3px;
+    animation:blink 1s step-end infinite;vertical-align:-2px;box-shadow:0 0 8px var(--green);}
+  @keyframes blink{50%{opacity:0;}}
 
-.chip-grid{ display:flex; flex-wrap:wrap; gap:8px; }
-.feature-chip{
-  border:1px solid var(--border); background: var(--panel); color: var(--muted);
-  padding:8px 14px; border-radius:20px; font-size:12.5px; cursor:pointer;
-  transition: all .12s ease;
-}
-.feature-chip.is-selected{ border-color: var(--cyan); color: var(--cyan); background: rgba(34,211,238,0.08); }
-.feature-chip.is-disabled{ opacity:.35; cursor:not-allowed; }
+  .metrics-panel{display:flex;flex-direction:column;gap:12px;}
+  .metric-card{border:1px solid var(--border);background:var(--panel);backdrop-filter:blur(16px);
+    border-radius:12px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;
+    position:relative;overflow:hidden;transition:all .2s ease;}
+  .metric-card:hover{border-color:var(--border-strong);transform:translateY(-1px);}
+  .metric-card label{font-size:12px;color:var(--muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.5px;}
+  .metric-card span{font-family:var(--font-mono);font-size:18px;font-weight:700;}
+  .metric-card-accent{border-color:rgba(34,211,238,0.4);
+    background:linear-gradient(135deg,rgba(34,211,238,0.10),rgba(192,132,252,0.05));
+    box-shadow:0 0 30px -10px rgba(34,211,238,0.5);}
+  .metric-card-accent span{background:var(--grad-cyan);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  #lossChart{border:1px solid var(--border);border-radius:12px;background:var(--panel);width:100%;height:auto;
+    box-shadow:inset 0 0 30px rgba(0,0,0,0.4);}
 
-.hyperparams{ display:grid; grid-template-columns: repeat(4, 1fr); gap:20px; margin-top:32px; }
-.hp-field label{ display:flex; justify-content:space-between; font-size:12px; color: var(--muted); margin-bottom:10px; font-family: var(--font-mono); }
-.hp-field label span{ color: var(--cyan); }
-input[type=range]{ width:100%; accent-color: var(--accent); }
+  /* PREDICT */
+  .predict-layout{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start;}
+  .predict-form{display:flex;flex-direction:column;gap:18px;}
+  .pf-field label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:8px;
+    font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.5px;}
+  .pf-field input,.pf-field select{width:100%;padding:11px 14px;background:var(--panel-solid);
+    border:1px solid var(--border-strong);color:var(--text);border-radius:8px;font-size:13.5px;transition:all .2s ease;}
+  .pf-field input:focus,.pf-field select:focus{outline:none;border-color:var(--cyan);
+    box-shadow:0 0 0 3px rgba(34,211,238,0.15);}
+  .pf-submit{margin-top:8px;}
 
-/* ============ TRAIN ============ */
-.train-layout{ display:grid; grid-template-columns: 1.4fr 1fr; gap:22px; align-items:start; }
+  .predict-result{border:1px solid var(--border-strong);border-radius:14px;padding:26px;
+    background:var(--panel);backdrop-filter:blur(20px);min-height:240px;
+    display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;
+    box-shadow:0 30px 80px -30px rgba(255,107,53,0.3);}
+  .predict-result::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 100% 0%,rgba(255,107,53,0.10),transparent 55%);pointer-events:none;}
+  .result-empty{color:var(--muted-dim);font-size:13px;text-align:center;font-family:var(--font-mono);}
+  .result-label{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);text-transform:uppercase;
+    letter-spacing:0.8px;margin-bottom:8px;position:relative;z-index:1;}
+  .result-value{font-family:var(--font-display);font-size:32px;font-weight:700;margin-bottom:20px;
+    background:var(--grad-primary);-webkit-background-clip:text;background-clip:text;color:transparent;
+    position:relative;z-index:1;letter-spacing:-0.5px;}
+  .prob-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;
+    font-family:var(--font-mono);color:var(--text);position:relative;z-index:1;}
+  .prob-bar-track{height:6px;background:rgba(120,140,200,0.10);border-radius:4px;overflow:hidden;
+    margin-bottom:14px;position:relative;z-index:1;}
+  .prob-bar-fill{height:100%;background:var(--grad-cyan);box-shadow:0 0 10px rgba(34,211,238,0.5);transition:width .5s ease;}
 
-.console{
-  border:1px solid var(--border-soft); border-radius:10px; overflow:hidden;
-  background:#080B10;
-}
-.console-topbar{
-  display:flex; align-items:center; gap:6px; padding:9px 12px;
-  background: var(--panel-raised); border-bottom:1px solid var(--border-soft);
-}
-.dot{ width:9px; height:9px; border-radius:50%; }
-.dot-r{ background:#5A2E28; } .dot-y{ background:#5A4F28; } .dot-g{ background:#2E5A38; }
-.console-title{ font-family: var(--font-mono); font-size:11px; color: var(--muted-dim); margin-left:8px; }
-.console-body{
-  height:340px; overflow-y:auto; padding:14px 16px;
-  font-family: var(--font-mono); font-size:12px; line-height:1.75;
-  color: var(--green);
-}
-.console-line-meta{ color: var(--muted-dim); }
-.console-line .k{ color: var(--muted); }
-.console-line .v{ color: var(--cyan); }
-.console-cursor{ display:inline-block; width:7px; height:13px; background: var(--green); margin-left:2px; animation: blink 1s step-end infinite; vertical-align:-2px; }
-@keyframes blink{ 50%{ opacity:0; } }
+  .image-preview-box{width:100%;height:220px;border:1.5px dashed var(--border-strong);border-radius:12px;
+    margin-bottom:14px;display:flex;align-items:center;justify-content:center;
+    background:var(--panel-solid);overflow:hidden;position:relative;}
+  .image-preview-box::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 50% 50%,rgba(34,211,238,0.06),transparent 60%);}
+  .image-preview-box img{max-width:100%;max-height:100%;object-fit:contain;position:relative;z-index:1;}
 
-.metrics-panel{ display:flex; flex-direction:column; gap:12px; }
-.metric-card{
-  border:1px solid var(--border-soft); background: var(--panel); border-radius:10px;
-  padding:14px 16px; display:flex; justify-content:space-between; align-items:center;
-}
-.metric-card label{ font-size:12px; color: var(--muted); }
-.metric-card span{ font-family: var(--font-mono); font-size:17px; font-weight:600; }
-.metric-card-accent{ border-color: rgba(34,211,238,0.35); }
-.metric-card-accent span{ color: var(--cyan); }
-#lossChart{ border:1px solid var(--border-soft); border-radius:10px; background: var(--panel); width:100%; height:auto; }
-
-/* ============ PREDICT ============ */
-.predict-layout{ display:grid; grid-template-columns: 1fr 320px; gap:26px; align-items:start; }
-.predict-form{ display:flex; flex-direction:column; gap:16px; }
-.pf-field label{ display:block; font-size:12.5px; color: var(--muted); margin-bottom:7px; font-family: var(--font-mono); }
-.pf-field input, .pf-field select{
-  width:100%; padding:10px 12px; background: var(--panel); border:1px solid var(--border);
-  color: var(--text); border-radius:7px; font-size:13.5px;
-}
-.pf-submit{ margin-top:6px; }
-
-.predict-result{
-  border:1px solid var(--border-soft); border-radius:12px; padding:22px;
-  background: var(--panel); min-height:220px; display:flex; flex-direction:column; justify-content:center;
-}
-.result-empty{ color: var(--muted-dim); font-size:13px; text-align:center; }
-.result-label{ font-family: var(--font-mono); font-size:11px; color: var(--muted-dim); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
-.result-value{ font-family: var(--font-display); font-size:26px; font-weight:700; color: var(--accent); margin-bottom:16px; }
-.prob-row{ display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:6px; font-family: var(--font-mono); }
-.prob-bar-track{ height:6px; background: var(--border-soft); border-radius:4px; overflow:hidden; margin-bottom:12px; }
-.prob-bar-fill{ height:100%; background: var(--cyan); }
-
-/* ============ IMAGE ADDITIONS ============ */
-.image-preview-box {
-  width: 100%; height: 200px; border: 1px dashed var(--border);
-  border-radius: 8px; margin-bottom: 12px; display: flex;
-  align-items: center; justify-content: center; background: #080B10;
-  overflow: hidden;
-}
-.image-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-@media (max-width: 880px){
-  .app{ grid-template-columns: 1fr; }
-  .rail{ flex-direction:row; align-items:center; overflow-x:auto; padding:16px; }
-  .steps{ flex-direction:row; }
-  .main{ padding:28px 20px; }
-  .config-grid, .train-layout, .predict-layout, .hyperparams{ grid-template-columns: 1fr; }
-}
+  @media (max-width:880px){
+    .app{grid-template-columns:1fr;}
+    .rail{flex-direction:row;align-items:center;overflow-x:auto;padding:16px;height:auto;position:static;}
+    .steps{flex-direction:row;}
+    .main{padding:28px 20px;}
+    .config-grid,.train-layout,.predict-layout,.hyperparams{grid-template-columns:1fr;}
+  }
 </style>
 </head>
 <body>
 
 <div class="app">
-
-  <!-- ============ SIDEBAR ============ -->
   <aside class="rail">
     <div class="brand">
       <span class="brand-mark">AI</span>
@@ -311,78 +290,52 @@ input[type=range]{ width:100%; accent-color: var(--accent); }
         <div class="brand-sub" id="consoleSubtitle">tabular ml console</div>
       </div>
     </div>
-
     <ol class="steps" id="steps">
-      <li class="step is-active" data-step="1">
-        <span class="step-index">01</span>
-        <span class="step-label">Upload asset</span>
-      </li>
-      <li class="step" data-step="2" id="step-nav-2">
-        <span class="step-index">02</span>
-        <span class="step-label">Configure task</span>
-      </li>
-      <li class="step" data-step="3">
-        <span class="step-index">03</span>
-        <span class="step-label">Train model</span>
-      </li>
-      <li class="step" data-step="4">
-        <span class="step-index">04</span>
-        <span class="step-label">Predict</span>
-      </li>
+      <li class="step is-active" data-step="1"><span class="step-index">01</span><span class="step-label">Upload asset</span></li>
+      <li class="step" data-step="2" id="step-nav-2"><span class="step-index">02</span><span class="step-label">Configure task</span></li>
+      <li class="step" data-step="3"><span class="step-index">03</span><span class="step-label">Train model</span></li>
+      <li class="step" data-step="4"><span class="step-index">04</span><span class="step-label">Predict</span></li>
     </ol>
-
     <div class="rail-footer">
       <button class="ghost-btn" id="resetBtn" type="button">Start over</button>
       <div class="rail-hint">runs a small PyTorch model<br>entirely on this server</div>
     </div>
   </aside>
 
-  <!-- ============ MAIN ============ -->
   <main class="main">
-
-    <!-- STEP 1: UPLOAD -->
     <section class="panel" id="panel-1">
       <header class="panel-head">
         <h1>Upload Dataset or Images</h1>
         <p>Bring a tabular .csv dataset OR a folder structure compressed as a .zip file for Image Classification.</p>
       </header>
-
-      <!-- Updated accept criteria to allow zip structures -->
       <label class="dropzone" id="dropzone" for="fileInput">
         <input type="file" id="fileInput" accept=".csv,.zip" hidden>
         <div class="dropzone-icon">&#8593;</div>
         <div class="dropzone-title">Drop a .csv or .zip folder here</div>
         <div class="dropzone-sub">or click to browse &middot; max 25MB</div>
       </label>
-
       <div class="error-box" id="uploadError" hidden></div>
-
       <div class="dataset-summary" id="datasetSummary" hidden>
         <div class="summary-row">
           <div class="summary-chip"><span id="sumRows">0</span><label id="rowChipLabel">rows</label></div>
           <div class="summary-chip"><span id="sumCols">0</span><label id="colChipLabel">columns</label></div>
           <div class="summary-chip"><span id="sumFile">&mdash;</span><label>file</label></div>
         </div>
-        <div class="table-wrap" id="csvPreviewWrapper">
-          <table id="previewTable"></table>
-        </div>
+        <div class="table-wrap" id="csvPreviewWrapper"><table id="previewTable"></table></div>
         <button class="primary-btn" id="toConfigureBtn" type="button">Configure task &rarr;</button>
       </div>
     </section>
 
-    <!-- STEP 2: CONFIGURE -->
     <section class="panel" id="panel-2" hidden>
       <header class="panel-head">
         <h1>Configure the task</h1>
         <p>Pick a target to predict and which columns feed the model.</p>
       </header>
-
       <div class="config-grid" id="tabularConfigGrid">
         <div class="field">
           <label>Target column <span class="field-hint">what should the model predict?</span></label>
           <select id="targetSelect"></select>
         </div>
-
         <div class="field">
           <label>Task type</label>
           <div class="segmented" id="taskTypeSeg">
@@ -391,44 +344,30 @@ input[type=range]{ width:100%; accent-color: var(--accent); }
             <button type="button" class="seg-btn" data-value="regression">Regression</button>
           </div>
         </div>
-
         <div class="field field-wide">
           <label>Feature columns <span class="field-hint">everything the model is allowed to look at</span></label>
           <div class="chip-grid" id="featureChips"></div>
         </div>
       </div>
-
       <div class="hyperparams">
-        <div class="hp-field">
-          <label>Epochs <span id="epochsVal">30</span></label>
-          <input type="range" id="epochsRange" min="5" max="150" value="30" step="5">
-        </div>
-        <div class="hp-field">
-          <label>Learning rate <span id="lrVal">0.001</span></label>
-          <input type="range" id="lrRange" min="1" max="50" value="10" step="1">
-        </div>
-        <div class="hp-field">
-          <label>Batch size <span id="batchVal">32</span></label>
-          <input type="range" id="batchRange" min="8" max="128" value="32" step="8">
-        </div>
-        <div class="hp-field">
-          <label>Test split <span id="testVal">20%</span></label>
-          <input type="range" id="testRange" min="10" max="40" value="20" step="5">
-        </div>
+        <div class="hp-field"><label>Epochs <span id="epochsVal">30</span></label>
+          <input type="range" id="epochsRange" min="5" max="150" value="30" step="5"></div>
+        <div class="hp-field"><label>Learning rate <span id="lrVal">0.001</span></label>
+          <input type="range" id="lrRange" min="1" max="50" value="10" step="1"></div>
+        <div class="hp-field"><label>Batch size <span id="batchVal">32</span></label>
+          <input type="range" id="batchRange" min="8" max="128" value="32" step="8"></div>
+        <div class="hp-field"><label>Test split <span id="testVal">20%</span></label>
+          <input type="range" id="testRange" min="10" max="40" value="20" step="5"></div>
       </div>
-
       <div class="error-box" id="configError" hidden></div>
-
       <button class="primary-btn" id="toTrainBtn" type="button">Train model &rarr;</button>
     </section>
 
-    <!-- STEP 3: TRAIN -->
     <section class="panel" id="panel-3" hidden>
       <header class="panel-head">
         <h1>Training</h1>
         <p id="trainSubtitle">Watch the console. Loss should drift down, the metric should drift up.</p>
       </header>
-
       <div class="train-layout">
         <div class="console" id="console">
           <div class="console-topbar">
@@ -437,308 +376,148 @@ input[type=range]{ width:100%; accent-color: var(--accent); }
           </div>
           <div class="console-body" id="consoleBody"></div>
         </div>
-
         <div class="metrics-panel">
-          <div class="metric-card">
-            <label>Final train loss</label>
-            <span id="finalTrainLoss">&mdash;</span>
-          </div>
-          <div class="metric-card">
-            <label>Final test loss</label>
-            <span id="finalTestLoss">&mdash;</span>
-          </div>
-          <div class="metric-card metric-card-accent">
-            <label id="metricLabel">Metric</label>
-            <span id="finalMetric">&mdash;</span>
-          </div>
+          <div class="metric-card"><label>Final train loss</label><span id="finalTrainLoss">&mdash;</span></div>
+          <div class="metric-card"><label>Final test loss</label><span id="finalTestLoss">&mdash;</span></div>
+          <div class="metric-card metric-card-accent"><label id="metricLabel">Metric</label><span id="finalMetric">&mdash;</span></div>
           <canvas id="lossChart" width="320" height="180"></canvas>
         </div>
       </div>
-
       <button class="primary-btn" id="toPredictBtn" type="button" hidden>Try predictions &rarr;</button>
     </section>
 
-    <!-- STEP 4: PREDICT -->
     <section class="panel" id="panel-4" hidden>
       <header class="panel-head">
         <h1>Predict</h1>
         <p id="predictSubtitle">Fill in feature values and run them through the trained model.</p>
       </header>
-
       <div class="predict-layout">
-        <!-- Will dynamically switch structure between tabular form inputs and image streams -->
-        <div id="predictFormContainer">
-          <form class="predict-form" id="predictForm"></form>
-        </div>
-
+        <div id="predictFormContainer"><form class="predict-form" id="predictForm"></form></div>
         <div class="predict-result" id="predictResult">
           <div class="result-empty">Fill the form and hit predict.</div>
         </div>
       </div>
-
-      <a class="ghost-btn" id="downloadModelBtn" href="#" download>Download trained model (.pkl)</a>
+      <a class="ghost-btn" id="downloadModelBtn" href="#" download style="margin-top:24px;">Download trained model (.pkl)</a>
     </section>
-
   </main>
 </div>
 
 <script>
- (() => {
+(() => {
   "use strict";
+  const state = { sessionId:null, taskType:"auto", columns:[], targetColumn:null, featureColumns:[], problemMode:null, trainMeta:null };
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => Array.from(document.querySelectorAll(s));
 
-  const state = {
-    sessionId: null,
-    taskType: "auto", // "auto", "classification", "regression", "image_classification"
-    columns: [],
-    targetColumn: null,
-    featureColumns: [],
-    problemMode: null,
-    trainMeta: null,
-  };
-
-  // ---------- helpers ----------
-  const $ = (sel) => document.querySelector(sel);
-  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
-
-  function setStepActive(n) {
-    $$(".step").forEach((el) => {
-      const step = Number(el.dataset.step);
-      el.classList.toggle("is-active", step === n);
-      el.classList.toggle("is-done", step < n);
-    });
-    [1, 2, 3, 4].forEach((n2) => {
-      const panel = $(`#panel-${n2}`);
-      if (panel) panel.hidden = n2 !== n;
-    });
+  function setStepActive(n){
+    $$(".step").forEach((el)=>{ const s=Number(el.dataset.step);
+      el.classList.toggle("is-active", s===n); el.classList.toggle("is-done", s<n); });
+    [1,2,3,4].forEach((k)=>{ const p=$(`#panel-${k}`); if(p) p.hidden = k!==n; });
+  }
+  function showError(el,m){ el.hidden=false; el.textContent=m; }
+  function hideError(el){ el.hidden=true; el.textContent=""; }
+  async function api(path,opts){
+    const res=await fetch(path,opts); let data;
+    try{ data=await res.json(); }catch(e){ throw new Error("Server returned an unexpected response."); }
+    if(!res.ok) throw new Error(data.error||"Request failed."); return data;
   }
 
-  function showError(el, message) {
-    el.hidden = false;
-    el.textContent = message;
-  }
-  function hideError(el) {
-    el.hidden = true;
-    el.textContent = "";
-  }
+  const dropzone=$("#dropzone"), fileInput=$("#fileInput"), uploadError=$("#uploadError");
+  ["dragenter","dragover"].forEach(evt=>dropzone.addEventListener(evt,e=>{e.preventDefault();dropzone.classList.add("is-dragover");}));
+  ["dragleave","drop"].forEach(evt=>dropzone.addEventListener(evt,e=>{e.preventDefault();dropzone.classList.remove("is-dragover");}));
+  dropzone.addEventListener("drop",e=>{ const f=e.dataTransfer.files[0]; if(f) handleUpload(f); });
+  fileInput.addEventListener("change",e=>{ const f=e.target.files[0]; if(f) handleUpload(f); });
 
-  async function api(path, opts) {
-    const res = await fetch(path, opts);
-    let data;
-    try {
-      data = await res.json();
-    } catch (e) {
-      throw new Error("Server returned an unexpected response.");
-    }
-    if (!res.ok) throw new Error(data.error || "Request failed.");
-    return data;
-  }
-
-  // ---------- STEP 1: upload ----------
-  const dropzone = $("#dropzone");
-  const fileInput = $("#fileInput");
-  const uploadError = $("#uploadError");
-
- ["dragenter", "dragover"].forEach((evt) =>
-  dropzone.addEventListener(evt, (e) => {
-    e.preventDefault();
-    dropzone.classList.add("is-dragover");
-  })
-);
-
-["dragleave", "drop"].forEach((evt) =>
-  dropzone.addEventListener(evt, (e) => {
-    e.preventDefault();
-    dropzone.classList.remove("is-dragover");
-  })
-);
-  dropzone.addEventListener("drop", (e) => {
-    const file = e.dataTransfer.files[0];
-    if (file) handleUpload(file);
-  });
-  fileInput.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (file) handleUpload(file);
-  });
-
-  async function handleUpload(file) {
+  async function handleUpload(file){
     hideError(uploadError);
-    const fd = new FormData();
-    fd.append("file", file);
-    try {
-      const data = await api("/api/upload", { method: "POST", body: fd });
-      state.sessionId = data.session_id;
-      state.taskType = data.task_type;
-
-      if (state.taskType === "image_classification") {
-        $("#consoleSubtitle").textContent = "cnn image engine";
-        renderImageDatasetSummary(data);
-      } else {
-        $("#consoleSubtitle").textContent = "tabular ml console";
-        state.columns = data.columns;
-        renderDatasetSummary(data);
-        buildConfigureStep(data.columns);
-      }
-    } catch (e) {
-      showError(uploadError, e.message);
-    }
+    const fd=new FormData(); fd.append("file",file);
+    try{
+      const data=await api("/api/upload",{method:"POST",body:fd});
+      state.sessionId=data.session_id; state.taskType=data.task_type;
+      if(state.taskType==="image_classification"){ $("#consoleSubtitle").textContent="cnn image engine"; renderImageDatasetSummary(data); }
+      else{ $("#consoleSubtitle").textContent="tabular ml console"; state.columns=data.columns; renderDatasetSummary(data); buildConfigureStep(data.columns); }
+    }catch(e){ showError(uploadError,e.message); }
   }
 
-  function renderDatasetSummary(data) {
-    $("#rowChipLabel").textContent = "rows";
-    $("#colChipLabel").textContent = "columns";
-    $("#sumRows").textContent = data.n_rows.toLocaleString();
-    $("#sumCols").textContent = data.n_cols;
-    $("#sumFile").textContent = data.filename;
-    $("#csvPreviewWrapper").hidden = false;
-
-    const table = $("#previewTable");
-    const cols = data.columns.map((c) => c.name);
-    const thead = `<thead><tr>${cols.map((c) => `<th>${escapeHtml(c)}</th>`).join("")}</tr></thead>`;
-    const tbody = `<tbody>${data.preview
-      .map(row => `<tr>${cols.map(c => `<td>${escapeHtml(String(row[c] ?? ""))}</td>`).join("")}</tr>`)
-      .join("")}</tbody>`;
-    table.innerHTML = thead + tbody;
-
-    $("#step-nav-2").style.display = ""; 
-    $("#toConfigureBtn").textContent = "Configure task \u2192";
-    $("#datasetSummary").hidden = false;
+  function renderDatasetSummary(data){
+    $("#rowChipLabel").textContent="rows"; $("#colChipLabel").textContent="columns";
+    $("#sumRows").textContent=data.n_rows.toLocaleString();
+    $("#sumCols").textContent=data.n_cols; $("#sumFile").textContent=data.filename;
+    $("#csvPreviewWrapper").hidden=false;
+    const table=$("#previewTable"); const cols=data.columns.map(c=>c.name);
+    const thead=`<thead><tr>${cols.map(c=>`<th>${escapeHtml(c)}</th>`).join("")}</tr></thead>`;
+    const tbody=`<tbody>${data.preview.map(row=>`<tr>${cols.map(c=>`<td>${escapeHtml(String(row[c]??""))}</td>`).join("")}</tr>`).join("")}</tbody>`;
+    table.innerHTML=thead+tbody;
+    $("#step-nav-2").style.display=""; $("#toConfigureBtn").textContent="Configure task \u2192";
+    $("#datasetSummary").hidden=false;
   }
-
-  function renderImageDatasetSummary(data) {
-    $("#rowChipLabel").textContent = "total images";
-    $("#colChipLabel").textContent = "discovered classes";
-    $("#sumRows").textContent = data.n_samples.toLocaleString();
-    $("#sumCols").textContent = data.classes.length;
-    $("#sumFile").textContent = "Zip Corpus";
-    $("#csvPreviewWrapper").hidden = true;
-
-    // Table view reset or simple listing of classes
-    const table = $("#previewTable");
-    table.innerHTML = `<thead><tr><th>Class Folder Found</th></tr></thead><tbody>` + 
-      data.classes.map(cls => `<tr><td>${escapeHtml(cls)}</td></tr>`).join("") + `</tbody>`;
-
-    // Automatically modify routing because Image Zips don't need manual column picking[cite: 1]
-    $("#step-nav-2").style.display = "none"; 
-    $("#toConfigureBtn").textContent = "Proceed to Training \u2192";
-    $("#datasetSummary").hidden = false;
+  function renderImageDatasetSummary(data){
+    $("#rowChipLabel").textContent="total images"; $("#colChipLabel").textContent="discovered classes";
+    $("#sumRows").textContent=data.n_samples.toLocaleString(); $("#sumCols").textContent=data.classes.length;
+    $("#sumFile").textContent="Zip Corpus"; $("#csvPreviewWrapper").hidden=true;
+    const table=$("#previewTable");
+    table.innerHTML=`<thead><tr><th>Class Folder Found</th></tr></thead><tbody>`+
+      data.classes.map(cls=>`<tr><td>${escapeHtml(cls)}</td></tr>`).join("")+`</tbody>`;
+    $("#step-nav-2").style.display="none"; $("#toConfigureBtn").textContent="Proceed to Training \u2192";
+    $("#datasetSummary").hidden=false;
   }
+  function escapeHtml(s){ return s.replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m])); }
 
-  function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
-  }
-
-  $("#toConfigureBtn").addEventListener("click", () => {
-    if (state.taskType === "image_classification") {
-      setStepActive(3);
-      runTraining();
-    } else {
-      setStepActive(2);
-    }
+  $("#toConfigureBtn").addEventListener("click",()=>{
+    if(state.taskType==="image_classification"){ setStepActive(3); runTraining(); } else setStepActive(2);
   });
 
-  // ---------- STEP 2: configure ----------
-  const targetSelect = $("#targetSelect");
-  const featureChips = $("#featureChips");
-  const configError = $("#configError");
-
-  function buildConfigureStep(columns) {
-    targetSelect.innerHTML = columns
-      .map((c) => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)} (${c.dtype})</option>`)
-      .join("");
-    targetSelect.value = columns[columns.length - 1].name;
-    renderFeatureChips();
+  const targetSelect=$("#targetSelect"), featureChips=$("#featureChips"), configError=$("#configError");
+  function buildConfigureStep(columns){
+    targetSelect.innerHTML=columns.map(c=>`<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)} (${c.dtype})</option>`).join("");
+    targetSelect.value=columns[columns.length-1].name; renderFeatureChips();
   }
-
-  function renderFeatureChips() {
-    const target = targetSelect.value;
-    featureChips.innerHTML = state.columns
-      .map((c) => {
-        const disabled = c.name === target;
-        const selected = !disabled;
-        return `<button type="button" class="feature-chip ${selected ? "is-selected" : ""} ${
-          disabled ? "is-disabled" : ""
-        }" data-col="${escapeHtml(c.name)}" ${disabled ? "disabled" : ""}>${escapeHtml(c.name)}</button>`;
-      })
-      .join("");
+  function renderFeatureChips(){
+    const target=targetSelect.value;
+    featureChips.innerHTML=state.columns.map(c=>{
+      const disabled=c.name===target, selected=!disabled;
+      return `<button type="button" class="feature-chip ${selected?"is-selected":""} ${disabled?"is-disabled":""}" data-col="${escapeHtml(c.name)}" ${disabled?"disabled":""}>${escapeHtml(c.name)}</button>`;
+    }).join("");
   }
-
-  targetSelect.addEventListener("change", renderFeatureChips);
-
-  featureChips.addEventListener("click", (e) => {
-    const btn = e.target.closest(".feature-chip");
-    if (!btn || btn.disabled) return;
-    btn.classList.toggle("is-selected");
+  targetSelect.addEventListener("change",renderFeatureChips);
+  featureChips.addEventListener("click",e=>{ const b=e.target.closest(".feature-chip"); if(!b||b.disabled) return; b.classList.toggle("is-selected"); });
+  $("#taskTypeSeg").addEventListener("click",e=>{
+    const b=e.target.closest(".seg-btn"); if(!b) return;
+    $$("#taskTypeSeg .seg-btn").forEach(x=>x.classList.remove("is-active"));
+    b.classList.add("is-active"); state.taskType=b.dataset.value;
   });
 
-  $("#taskTypeSeg").addEventListener("click", (e) => {
-    const btn = e.target.closest(".seg-btn");
-    if (!btn) return;
-    $$("#taskTypeSeg .seg-btn").forEach((b) => b.classList.remove("is-active"));
-    btn.classList.add("is-active");
-    state.taskType = btn.dataset.value;
-  });
+  const epochsRange=$("#epochsRange"), epochsVal=$("#epochsVal");
+  const lrRange=$("#lrRange"), lrVal=$("#lrVal");
+  const batchRange=$("#batchRange"), batchVal=$("#batchVal");
+  const testRange=$("#testRange"), testVal=$("#testVal");
+  epochsRange.addEventListener("input",()=>(epochsVal.textContent=epochsRange.value));
+  batchRange.addEventListener("input",()=>(batchVal.textContent=batchRange.value));
+  testRange.addEventListener("input",()=>(testVal.textContent=`${testRange.value}%`));
+  lrRange.addEventListener("input",()=>(lrVal.textContent=(lrRange.value/10000).toFixed(4)));
+  lrVal.textContent=(lrRange.value/10000).toFixed(4);
 
-  // hyperparam sliders
-  const epochsRange = $("#epochsRange"), epochsVal = $("#epochsVal");
-  const lrRange = $("#lrRange"), lrVal = $("#lrVal");
-  const batchRange = $("#batchRange"), batchVal = $("#batchVal");
-  const testRange = $("#testRange"), testVal = $("#testVal");
-
-  epochsRange.addEventListener("input", () => (epochsVal.textContent = epochsRange.value));
-  batchRange.addEventListener("input", () => (batchVal.textContent = batchRange.value));
-  testRange.addEventListener("input", () => (testVal.textContent = `${testRange.value}%`));
-  lrRange.addEventListener("input", () => (lrVal.textContent = (lrRange.value / 10000).toFixed(4)));
-  lrVal.textContent = (lrRange.value / 10000).toFixed(4);
-
-  $("#toTrainBtn").addEventListener("click", async () => {
+  $("#toTrainBtn").addEventListener("click",async()=>{
     hideError(configError);
-    const target = targetSelect.value;
-    const features = $$("#featureChips .feature-chip.is-selected").map((b) => b.dataset.col);
-    if (features.length === 0) {
-      showError(configError, "Select at least one feature column.");
-      return;
-    }
-    state.targetColumn = target;
-    state.featureColumns = features;
-
-    try {
-      await api("/api/configure", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          session_id: state.sessionId,
-          target_column: target,
-          feature_columns: features,
-          task_type: state.taskType,
-        }),
-      });
-      setStepActive(3);
-      runTraining();
-    } catch (e) {
-      showError(configError, e.message);
-    }
+    const target=targetSelect.value;
+    const features=$$("#featureChips .feature-chip.is-selected").map(b=>b.dataset.col);
+    if(features.length===0){ showError(configError,"Select at least one feature column."); return; }
+    state.targetColumn=target; state.featureColumns=features;
+    try{
+      await api("/api/configure",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({session_id:state.sessionId,target_column:target,feature_columns:features,task_type:state.taskType})});
+      setStepActive(3); runTraining();
+    }catch(e){ showError(configError,e.message); }
   });
 
-  // ---------- STEP 3: train ----------
-  const consoleBody = $("#consoleBody");
-  let chartCtx = null;
+  const consoleBody=$("#consoleBody"); let chartCtx=null;
+  function consoleLine(html){ const l=document.createElement("div"); l.className="console-line"; l.innerHTML=html;
+    consoleBody.appendChild(l); consoleBody.scrollTop=consoleBody.scrollHeight; }
 
-  function consoleLine(html) {
-    const line = document.createElement("div");
-    line.className = "console-line";
-    line.innerHTML = html;
-    consoleBody.appendChild(line);
-    consoleBody.scrollTop = consoleBody.scrollHeight;
-  }
-
-  async function runTraining() {
-    consoleBody.innerHTML = "";
-    $("#toPredictBtn").hidden = true;
-    $("#finalTrainLoss").textContent = "\u2014";
-    $("#finalTestLoss").textContent = "\u2014";
-    $("#finalMetric").textContent = "\u2014";
-
-    if (state.taskType === "image_classification") {
+  async function runTraining(){
+    consoleBody.innerHTML=""; $("#toPredictBtn").hidden=true;
+    $("#finalTrainLoss").textContent="\u2014"; $("#finalTestLoss").textContent="\u2014"; $("#finalMetric").textContent="\u2014";
+    if(state.taskType==="image_classification"){
       consoleLine(`<span class="console-line-meta">$</span> autoai cnn-train --session ${state.sessionId}`);
       consoleLine(`<span class="k">model</span> <span class="v">SimpleCNN</span> <span class="k">epochs</span> <span class="v">${epochsRange.value}</span> <span class="k">lr</span> <span class="v">${(lrRange.value/10000).toFixed(4)}</span>`);
       consoleLine(`<span class="console-line-meta">loading images from folders into tensors...</span>`);
@@ -747,117 +526,66 @@ input[type=range]{ width:100%; accent-color: var(--accent); }
       consoleLine(`<span class="k">task_type</span> <span class="v">${escapeHtml(state.taskType)}</span> <span class="k">epochs</span> <span class="v">${epochsRange.value}</span> <span class="k">lr</span> <span class="v">${(lrRange.value/10000).toFixed(4)}</span>`);
       consoleLine(`<span class="console-line-meta">building feature matrix, fitting scaler...</span>`);
     }
-
     let data;
-    try {
-      data = await api("/api/train", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          session_id: state.sessionId,
-          epochs: Number(epochsRange.value),
-          lr: Number(lrRange.value) / 10000,
-          batch_size: Number(batchRange.value),
-          test_size: Number(testRange.value) / 100,
-        }),
-      });
-    } catch (e) {
-      const hint = e.message === "Failed to fetch" ? " (connection dropped - check terminal fallback)" : "";
-      consoleLine(`<span style="color:var(--red)">error: ${escapeHtml(e.message)}${escapeHtml(hint)}</span>`);
-      return;
+    try{
+      data=await api("/api/train",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({session_id:state.sessionId,epochs:Number(epochsRange.value),lr:Number(lrRange.value)/10000,batch_size:Number(batchRange.value),test_size:Number(testRange.value)/100})});
+    }catch(e){
+      const hint=e.message==="Failed to fetch"?" (connection dropped - check terminal fallback)":"";
+      consoleLine(`<span style="color:var(--red)">error: ${escapeHtml(e.message)}${escapeHtml(hint)}</span>`); return;
     }
-
-    state.problemMode = data.problem_mode;
-    state.trainMeta = data;
-
-    const metricLabel = data.problem_mode === "regression" ? "R\u00B2" : "accuracy";
-    $("#metricLabel").textContent = metricLabel === "R\u00B2" ? "R\u00B2 score" : "Accuracy";
-
+    state.problemMode=data.problem_mode; state.trainMeta=data;
+    const metricLabel=data.problem_mode==="regression"?"R\u00B2":"accuracy";
+    $("#metricLabel").textContent=metricLabel==="R\u00B2"?"R\u00B2 score":"Accuracy";
     initChart(data.log);
-
-    for (let i = 0; i < data.log.length; i++) {
-      const row = data.log[i];
-      await sleep(data.log.length > 60 ? 8 : Math.max(6, 260 - i * 2));
+    for(let i=0;i<data.log.length;i++){
+      const row=data.log[i];
+      await sleep(data.log.length>60?8:Math.max(6,260-i*2));
       consoleLine(
-        `<span class="k">epoch</span> <span class="v">${String(row.epoch).padStart(3, " ")}</span>` +
-        `  <span class="k">train_loss</span> <span class="v">${row.train_loss.toFixed(4)}</span>` +
-        `  <span class="k">test_loss</span> <span class="v">${row.test_loss.toFixed(4)}</span>` +
-        `  <span class="k">${escapeHtml(row.metric_name)}</span> <span class="v">${row.metric_value.toFixed(4)}</span>`
-      );
+        `<span class="k">epoch</span> <span class="v">${String(row.epoch).padStart(3," ")}</span>`+
+        `  <span class="k">train_loss</span> <span class="v">${row.train_loss.toFixed(4)}</span>`+
+        `  <span class="k">test_loss</span> <span class="v">${row.test_loss.toFixed(4)}</span>`+
+        `  <span class="k">${escapeHtml(row.metric_name)}</span> <span class="v">${row.metric_value.toFixed(4)}</span>`);
       updateChart(i);
     }
     consoleLine(`<span class="console-line-meta">done.</span><span class="console-cursor"></span>`);
-
-    const final = data.final;
-    $("#finalTrainLoss").textContent = final.train_loss.toFixed(4);
-    $("#finalTestLoss").textContent = final.test_loss.toFixed(4);
-    $("#finalMetric").textContent = final.metric_value.toFixed(4);
-
+    const final=data.final;
+    $("#finalTrainLoss").textContent=final.train_loss.toFixed(4);
+    $("#finalTestLoss").textContent=final.test_loss.toFixed(4);
+    $("#finalMetric").textContent=final.metric_value.toFixed(4);
     buildPredictForm(data);
-    $("#toPredictBtn").hidden = false;
-    $("#downloadModelBtn").href = `/api/download_model/${state.sessionId}`;
+    $("#toPredictBtn").hidden=false;
+    $("#downloadModelBtn").href=`/api/download_model/${state.sessionId}`;
   }
+  function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-  function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
-
-  function initChart(log) {
-    const canvas = $("#lossChart");
-    chartCtx = { ctx: canvas.getContext("2d"), canvas, log };
-    drawChart(0);
+  function initChart(log){ const c=$("#lossChart"); chartCtx={ctx:c.getContext("2d"),canvas:c,log}; drawChart(0); }
+  function updateChart(i){ drawChart(i); }
+  function drawChart(uptoIndex){
+    if(!chartCtx) return;
+    const {ctx,canvas,log}=chartCtx; const W=canvas.width,H=canvas.height; ctx.clearRect(0,0,W,H);
+    const rows=log.slice(0,uptoIndex+1); if(rows.length<2) return;
+    const pad=24; const allVals=rows.flatMap(r=>[r.train_loss,r.test_loss]);
+    const maxV=Math.max(...allVals,0.0001), minV=Math.min(...allVals,0);
+    const xFor=(i)=>pad+(i/(log.length-1))*(W-pad*2);
+    const yFor=(v)=>H-pad-((v-minV)/(maxV-minV||1))*(H-pad*2);
+    ctx.strokeStyle="rgba(120,140,200,0.10)"; ctx.lineWidth=1;
+    for(let g=0;g<=3;g++){ const y=pad+(g/3)*(H-pad*2); ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(W-pad,y); ctx.stroke(); }
+    const drawLine=(key,color)=>{ ctx.beginPath();
+      rows.forEach((r,i)=>{ const x=xFor(i),y=yFor(r[key]); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); });
+      ctx.strokeStyle=color; ctx.lineWidth=2; ctx.shadowColor=color; ctx.shadowBlur=10; ctx.stroke(); ctx.shadowBlur=0; };
+    drawLine("train_loss","#FF6B35"); drawLine("test_loss","#22D3EE");
+    ctx.font="10px JetBrains Mono";
+    ctx.fillStyle="#FF6B35"; ctx.fillText("train",pad,14);
+    ctx.fillStyle="#22D3EE"; ctx.fillText("test",pad+40,14);
   }
-  function updateChart(uptoIndex) { drawChart(uptoIndex); }
-  
-  function drawChart(uptoIndex) {
-    if (!chartCtx) return;
-    const { ctx, canvas, log } = chartCtx;
-    const W = canvas.width, H = canvas.height;
-    ctx.clearRect(0, 0, W, H);
-    const rows = log.slice(0, uptoIndex + 1);
-    if (rows.length < 2) return;
+  $("#toPredictBtn").addEventListener("click",()=>setStepActive(4));
 
-    const pad = 24;
-    const allVals = rows.flatMap((r) => [r.train_loss, r.test_loss]);
-    const maxV = Math.max(...allVals, 0.0001);
-    const minV = Math.min(...allVals, 0);
-
-    const xFor = (i) => pad + (i / (log.length - 1)) * (W - pad * 2);
-    const yFor = (v) => H - pad - ((v - minV) / (maxV - minV || 1)) * (H - pad * 2);
-
-    ctx.strokeStyle = "#1A222D";
-    ctx.lineWidth = 1;
-    for (let g = 0; g <= 3; g++) {
-      const y = pad + (g / 3) * (H - pad * 2);
-      ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
-    }
-
-    const drawLine = (key, color) => {
-      ctx.beginPath();
-      rows.forEach((r, i) => {
-        const x = xFor(i), y = yFor(r[key]);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
-    };
-    drawLine("train_loss", "#FF6B35");
-    drawLine("test_loss", "#22D3EE");
-
-    ctx.font = "10px JetBrains Mono";
-    ctx.fillStyle = "#FF6B35"; ctx.fillText("train", pad, 14);
-    ctx.fillStyle = "#22D3EE"; ctx.fillText("test", pad + 40, 14);
-  }
-
-  $("#toPredictBtn").addEventListener("click", () => setStepActive(4));
-
-  // ---------- STEP 4: predict ----------
-  const predictFormContainer = $("#predictFormContainer");
-  const predictResult = $("#predictResult");
-
-  function buildPredictForm(data) {
-    if (state.taskType === "image_classification") {
-      $("#predictSubtitle").textContent = "Upload a test image to get class predictions and probabilities.";
-      // Form replacing for Image Multipart pipeline[cite: 4]
-      predictFormContainer.innerHTML = `
+  const predictFormContainer=$("#predictFormContainer"), predictResult=$("#predictResult");
+  function buildPredictForm(data){
+    if(state.taskType==="image_classification"){
+      $("#predictSubtitle").textContent="Upload a test image to get class predictions and probabilities.";
+      predictFormContainer.innerHTML=`
         <form class="predict-form" id="predictImageForm">
           <div class="pf-field">
             <label>Select Test Image</label>
@@ -867,113 +595,55 @@ input[type=range]{ width:100%; accent-color: var(--accent); }
             <input type="file" id="inferImageInput" accept="image/*" required>
           </div>
           <button class="primary-btn pf-submit" type="submit">Run Image Inference</button>
-        </form>
-      `;
-
-      // Live Image Stream Preview listener
-      $("#inferImageInput").addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (evt) => {
-            $("#imgPreviewBox").innerHTML = `<img src="${evt.target.result}" />`;
-          };
-          reader.readAsDataURL(file);
-        }
+        </form>`;
+      $("#inferImageInput").addEventListener("change",e=>{
+        const f=e.target.files[0]; if(f){ const r=new FileReader();
+          r.onload=ev=>{ $("#imgPreviewBox").innerHTML=`<img src="${ev.target.result}" />`; }; r.readAsDataURL(f); }
       });
-
-      // Submit interception for Form Multipart File payload[cite: 4]
-      $("#predictImageForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const fileEl = $("#inferImageInput");
-        if (!fileEl.files[0]) return;
-
-        const fd = new FormData();
-        fd.append("image", fileEl.files[0]);
-        fd.append("session_id", state.sessionId);
-
-        try {
-          const result = await api("/api/predict", { method: "POST", body: fd });
-          renderPredictResult(result);
-        } catch (err) {
-          predictResult.innerHTML = `<div class="error-box">${escapeHtml(err.message)}</div>`;
-        }
+      $("#predictImageForm").addEventListener("submit",async e=>{
+        e.preventDefault(); const fEl=$("#inferImageInput"); if(!fEl.files[0]) return;
+        const fd=new FormData(); fd.append("image",fEl.files[0]); fd.append("session_id",state.sessionId);
+        try{ const r=await api("/api/predict",{method:"POST",body:fd}); renderPredictResult(r); }
+        catch(err){ predictResult.innerHTML=`<div class="error-box">${escapeHtml(err.message)}</div>`; }
       });
-
     } else {
-      $("#predictSubtitle").textContent = "Fill in feature values and run them through the trained model.";
-      predictFormContainer.innerHTML = `<form class="predict-form" id="predictForm"></form>`;
-      const predictForm = $("#predictForm");
-      const categories = data.categories || {};
-      
-      predictForm.innerHTML = data.feature_columns
-        .map((col) => {
-          if (data.categorical_features.includes(col)) {
-            const opts = (categories[col] || [])
-              .map((v) => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`)
-              .join("");
-            return `<div class="pf-field"><label>${escapeHtml(col)}</label><select name="${escapeHtml(col)}">${opts}</select></div>`;
-          }
-          return `<div class="pf-field"><label>${escapeHtml(col)}</label><input type="number" step="any" name="${escapeHtml(col)}" placeholder="0" required></div>`;
-        })
-        .join("") + `<button class="primary-btn pf-submit" type="submit">Run prediction</button>`;
-
-      predictForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const fd = new FormData(predictForm);
-        const features = {};
-        fd.forEach((v, k) => (features[k] = v));
-
-        try {
-          const result = await api("/api/predict", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ session_id: state.sessionId, features }),
-          });
-          renderPredictResult(result);
-        } catch (e2) {
-          predictResult.innerHTML = `<div class="error-box">${escapeHtml(e2.message)}</div>`;
+      $("#predictSubtitle").textContent="Fill in feature values and run them through the trained model.";
+      predictFormContainer.innerHTML=`<form class="predict-form" id="predictForm"></form>`;
+      const predictForm=$("#predictForm"); const categories=data.categories||{};
+      predictForm.innerHTML=data.feature_columns.map(col=>{
+        if(data.categorical_features.includes(col)){
+          const opts=(categories[col]||[]).map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join("");
+          return `<div class="pf-field"><label>${escapeHtml(col)}</label><select name="${escapeHtml(col)}">${opts}</select></div>`;
         }
+        return `<div class="pf-field"><label>${escapeHtml(col)}</label><input type="number" step="any" name="${escapeHtml(col)}" placeholder="0" required></div>`;
+      }).join("")+`<button class="primary-btn pf-submit" type="submit">Run prediction</button>`;
+      predictForm.addEventListener("submit",async e=>{
+        e.preventDefault(); const fd=new FormData(predictForm); const features={}; fd.forEach((v,k)=>features[k]=v);
+        try{ const r=await api("/api/predict",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({session_id:state.sessionId,features})}); renderPredictResult(r); }
+        catch(e2){ predictResult.innerHTML=`<div class="error-box">${escapeHtml(e2.message)}</div>`; }
       });
     }
   }
-
-  function renderPredictResult(result) {
-    if (result.probabilities) {
-      const rows = Object.entries(result.probabilities)
-        .sort((a, b) => b[1] - a[1])
-        .map(([label, p]) => `
-          <div class="prob-row"><span>${escapeHtml(label)}</span><span>${(p * 100).toFixed(1)}%</span></div>
-          <div class="prob-bar-track"><div class="prob-bar-fill" style="width:${p * 100}%"></div></div>
-        `)
-        .join("");
-      predictResult.innerHTML = `
-        <div class="result-label">Predicted class</div>
-        <div class="result-value">${escapeHtml(result.prediction)}</div>
-        ${rows}
-      `;
+  function renderPredictResult(result){
+    if(result.probabilities){
+      const rows=Object.entries(result.probabilities).sort((a,b)=>b[1]-a[1]).map(([label,p])=>`
+        <div class="prob-row"><span>${escapeHtml(label)}</span><span>${(p*100).toFixed(1)}%</span></div>
+        <div class="prob-bar-track"><div class="prob-bar-fill" style="width:${p*100}%"></div></div>`).join("");
+      predictResult.innerHTML=`<div class="result-label">Predicted class</div>
+        <div class="result-value">${escapeHtml(result.prediction)}</div>${rows}`;
     } else {
-      predictResult.innerHTML = `
-        <div class="result-label">Predicted value</div>
-        <div class="result-value">${result.prediction}</div>
-      `;
+      predictResult.innerHTML=`<div class="result-label">Predicted value</div>
+        <div class="result-value">${result.prediction}</div>`;
     }
   }
 
-  // ---------- reset ----------
-  $("#resetBtn").addEventListener("click", async () => {
-    if (state.sessionId) {
-      try {
-        await api("/api/reset", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ session_id: state.sessionId }),
-        });
-      } catch (e) { /* ignore */ }
-    }
+  $("#resetBtn").addEventListener("click",async()=>{
+    if(state.sessionId){ try{ await api("/api/reset",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({session_id:state.sessionId})}); }catch(e){} }
     window.location.reload();
   });
- })();
+})();
 </script>
 </body>
 </html>
