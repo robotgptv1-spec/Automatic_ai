@@ -6,9 +6,11 @@ from ml_engine import AutoMLSession
 from cnn_task import AutoImageSession
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 25 * 1024 * 1024 
-# Is line ko add karein taaki Flask heavy incoming content streams ko direct reject na kare
-app.config['MAX_FORM_MEMORY_SIZE'] = 25 * 1024 * 1024
+app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024 
+app.config['MAX_FORM_MEMORY_SIZE'] = 100 * 1024 * 1024
+
+# ADD THIS LINE RIGHT HERE:
+app.config['PROPAGATE_EXCEPTIONS'] = True
 
 # In-memory session store: session_id -> AutoMLSession / AutoImageSession
 SESSIONS = {}
