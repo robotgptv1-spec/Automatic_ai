@@ -180,6 +180,8 @@ def reset():
     return jsonify({"ok": True})
 
 
+# Replace the old __name__ block with this:
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port, debug=True, use_reloader=False, threaded=True)
+    app.run(host="0.0.0.0", port=port)
+
