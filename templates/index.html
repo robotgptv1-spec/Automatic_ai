@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoAI &mdash; Tabular ML Console</title>
+<title>Datamind &mdash; Tabular ML Console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -365,7 +365,7 @@ input[type=range]{ width:100%; accent-color: var(--accent); }
     <div class="brand">
       <span class="brand-mark">AI</span>
       <div class="brand-text">
-        <div class="brand-title">AutoAI</div>
+        <div class="brand-title">Datamind</div>
         <div class="brand-sub">tabular ml console</div>
       </div>
     </div>
@@ -402,7 +402,7 @@ input[type=range]{ width:100%; accent-color: var(--accent); }
     <section class="panel" id="panel-1">
       <header class="panel-head">
         <h1>Upload a CSV</h1>
-        <p>Bring a dataset. AutoAI inspects the columns and figures out what it's working with.</p>
+        <p>Bring a dataset. Datamind inspects the columns and figures out what it's working with.</p>
       </header>
 
       <label class="dropzone" id="dropzone" for="fileInput">
@@ -495,7 +495,7 @@ input[type=range]{ width:100%; accent-color: var(--accent); }
       <div class="image-config-info" id="imageConfigInfo" hidden>
         <div class="ai-card">
           <div class="ai-card-title">Image classification detected</div>
-          <p class="ai-card-sub">Your ZIP was organized into class folders &mdash; AutoAI found <strong id="imgClassCountConfig">0</strong> classes across <strong id="imgSampleCountConfig">0</strong> images. No column configuration needed here; a small CNN trains directly on the images using the settings below.</p>
+          <p class="ai-card-sub">Your ZIP was organized into class folders &mdash; Datamind found <strong id="imgClassCountConfig">0</strong> classes across <strong id="imgSampleCountConfig">0</strong> images. No column configuration needed here; a small CNN trains directly on the images using the settings below.</p>
         </div>
       </div>
 
@@ -904,8 +904,8 @@ input[type=range]{ width:100%; accent-color: var(--accent); }
     $("#finalMetric").textContent = "\u2014";
 
     const trainDesc = state.datasetType === "image"
-      ? `autoai train --mode image_classification`
-      : `autoai train --target ${escapeHtml(state.targetColumn)} --features ${state.featureColumns.length}`;
+      ? `Datamind train --mode image_classification`
+      : `Datamind train --target ${escapeHtml(state.targetColumn)} --features ${state.featureColumns.length}`;
     consoleLine(`<span class="console-line-meta">$</span> ${trainDesc}`);
     consoleLine(`<span class="k">task_type</span> <span class="v">${escapeHtml(state.taskType)}</span> <span class="k">epochs</span> <span class="v">${epochsRange.value}</span> <span class="k">lr</span> <span class="v">${(lrRange.value/10000).toFixed(4)}</span>`);
     consoleLine(`<span class="console-line-meta">building feature matrix, fitting scaler...</span>`);
