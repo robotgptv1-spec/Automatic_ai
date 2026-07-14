@@ -461,7 +461,11 @@
     $("#step-nav-2").style.display="none"; $("#toConfigureBtn").textContent="Proceed to Training \u2192";
     $("#datasetSummary").hidden=false;
   }
-  function escapeHtml(s){ return s.replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m])); }
+  // Isko replace karo:
+function escapeHtml(s){ 
+  if (s === undefined || s === null) return ""; // Yeh line crash hone se bachaegi
+  return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m])); 
+}
 
   $("#toConfigureBtn").addEventListener("click",()=>{
     if(state.taskType==="image_classification"){ setStepActive(3); runTraining(); } else setStepActive(2);
